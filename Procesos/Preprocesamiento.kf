@@ -1,0 +1,223 @@
+{
+	"flow_name" : "Preprocesamiento",
+	"steps" : [
+		{
+			"class" : "weka.knowledgeflow.steps.Filter",
+			"properties" : {
+				"filter" : {
+					"type" : "optionHandler",
+					"class" : "weka.filters.unsupervised.attribute.InterquartileRange",
+					"options" : "-R first-last -O 3.0 -E 6.0"
+				},
+				"name" : "InterquartileRange"
+			},
+			"connections" : {
+				"dataSet" : [
+					"RemoveWithValues"
+				]
+			},
+			"coordinates" : "451,36"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Filter",
+			"properties" : {
+				"filter" : {
+					"type" : "optionHandler",
+					"class" : "weka.filters.unsupervised.instance.RemoveWithValues",
+					"options" : "-S 0.0 -C last -L last"
+				},
+				"name" : "RemoveWithValues"
+			},
+			"connections" : {
+				"dataSet" : [
+					"RemoveWithValues2"
+				]
+			},
+			"coordinates" : "626,36"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Filter",
+			"properties" : {
+				"filter" : {
+					"type" : "optionHandler",
+					"class" : "weka.filters.unsupervised.instance.RemoveWithValues",
+					"options" : "-S 0.0 -C 22 -L last"
+				},
+				"name" : "RemoveWithValues2"
+			},
+			"connections" : {
+				"dataSet" : [
+					"Remove"
+				]
+			},
+			"coordinates" : "789,36"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Filter",
+			"properties" : {
+				"filter" : {
+					"type" : "optionHandler",
+					"class" : "weka.filters.unsupervised.attribute.Remove",
+					"options" : "-R 22,last"
+				},
+				"name" : "Remove"
+			},
+			"connections" : {
+				"dataSet" : [
+					"CSVSaver",
+					"AttributeSummarizer"
+				]
+			},
+			"coordinates" : "796,343"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Note",
+			"properties" : {
+				"name" : "Note",
+				"noteText" : "Cargamos el archivo CSV"
+			},
+			"connections" : {
+			},
+			"coordinates" : "25,138"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Note",
+			"properties" : {
+				"name" : "Note2",
+				"noteText" : "Reemplaamos los valores missing\npor la media o la moda"
+			},
+			"connections" : {
+			},
+			"coordinates" : "199,134"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Note",
+			"properties" : {
+				"name" : "Note3",
+				"noteText" : "Identificamos los \ncasos anomalos"
+			},
+			"connections" : {
+			},
+			"coordinates" : "447,132"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Note",
+			"properties" : {
+				"name" : "Note4",
+				"noteText" : "Eliminamos los \noutlier extremos"
+			},
+			"connections" : {
+			},
+			"coordinates" : "618,135"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Note",
+			"properties" : {
+				"name" : "Note5",
+				"noteText" : "Eliminamos los\noutlier normales"
+			},
+			"connections" : {
+			},
+			"coordinates" : "778,134"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Note",
+			"properties" : {
+				"name" : "Note6",
+				"noteText" : "Elimnamos las variables \noutlier creadas"
+			},
+			"connections" : {
+			},
+			"coordinates" : "768,431"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Filter",
+			"properties" : {
+				"filter" : {
+					"type" : "optionHandler",
+					"class" : "weka.filters.unsupervised.attribute.ReplaceMissingValues",
+					"options" : ""
+				},
+				"name" : "Remplazar valores missing"
+			},
+			"connections" : {
+				"dataSet" : [
+					"InterquartileRange"
+				]
+			},
+			"coordinates" : "244,35"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Loader",
+			"properties" : {
+				"loader" : {
+					"type" : "loader",
+					"class" : "weka.core.converters.CSVLoader",
+					"filePath" : "",
+					"useRelativePath" : false,
+					"options" : "-format \"yyyy-MM-dd\\'T\\'HH:mm:ss\" -M ? -B 100 -E \"\\\",\\'\" -F ,"
+				},
+				"name" : "CSVLoader"
+			},
+			"connections" : {
+				"dataSet" : [
+					"Remplazar valores missing"
+				]
+			},
+			"coordinates" : "45,37"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Saver",
+			"properties" : {
+				"name" : "CSVSaver",
+				"relationNameForFilename" : false,
+				"saver" : {
+					"type" : "saver",
+					"class" : "weka.core.converters.CSVSaver",
+					"filePath" : "",
+					"dir" : "",
+					"prefix" : "",
+					"useRelativePath" : true,
+					"options" : "-F , -M ? -decimal 6"
+				}
+			},
+			"connections" : {
+			},
+			"coordinates" : "533,227"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Note",
+			"properties" : {
+				"name" : "Note7",
+				"noteText" : "Guardamos el\ndataset preprocesado"
+			},
+			"connections" : {
+			},
+			"coordinates" : "512,317"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.AttributeSummarizer",
+			"properties" : {
+				"name" : "AttributeSummarizer",
+				"offscreenAdditionalOpts" : "",
+				"offscreenHeight" : "400",
+				"offscreenRendererName" : "Weka Chart Renderer",
+				"offscreenWidth" : "500",
+				"offscreenXAxis" : ""
+			},
+			"connections" : {
+			},
+			"coordinates" : "338,339"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Note",
+			"properties" : {
+				"name" : "Note8",
+				"noteText" : "Graficos Atributos"
+			},
+			"connections" : {
+			},
+			"coordinates" : "325,439"
+		}
+	]
+}
